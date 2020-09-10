@@ -26,6 +26,8 @@ using static Raylib_cs.Raylib;  // core methods (InitWindow, BeginDrawing())
 using static Raylib_cs.Color;   // color (RAYWHITE, MAROON, etc.)
 using static Raylib_cs.Raymath; // mathematics utilities and operations (Vector2Add, etc.)
 using System.Numerics;          // mathematics types (Vector2, Vector3, etc.)
+using System;
+using raygamecsharp;
 
 namespace Examples
 {
@@ -40,6 +42,9 @@ namespace Examples
 
             InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 
+
+
+            Player player = new Player();
             SetTargetFPS(60);
             //--------------------------------------------------------------------------------------
 
@@ -49,6 +54,12 @@ namespace Examples
                 // Update
                 //----------------------------------------------------------------------------------
                 // TODO: Update your variables here
+                player.jump = player.checkJump();
+                if (player.jump)
+                {
+
+                }
+
                 //----------------------------------------------------------------------------------
 
                 // Draw
@@ -57,7 +68,7 @@ namespace Examples
 
                 ClearBackground(RAYWHITE);
 
-                DrawText("Congrats! You created your first window!", 190, 200, 20, MAROON);
+                DrawText("Score Test", 300, 0, 15, MAROON);
 
                 EndDrawing();
                 //----------------------------------------------------------------------------------

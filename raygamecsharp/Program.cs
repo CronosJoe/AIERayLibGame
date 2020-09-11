@@ -44,8 +44,11 @@ namespace Examples
 
 
             bool inputRelease = false;
+            int spawnCounter = 0;
+            bool spawnLock = false;
             int frameCount = 0;
             Player player = new Player();
+            Random rand = new Random();
             player.posX = (screenWidth / 2)-100;
             player.posY = screenHeight - 50;
             //So I want space[0] to be the player's starting x subtracted by 2 of the player's size(hardcoded at 50), but I hope to remove the hard code so time to make an equation
@@ -63,7 +66,20 @@ namespace Examples
                 }
 
             }
-            
+            BasicEnemy[] enemyArr = new BasicEnemy[player.space.Length];
+            for (int i = 0; i<enemyArr.Length; i++)
+            {
+               
+                BasicEnemy tempname = new BasicEnemy();
+                tempname.ID = "ID#: " + i;
+                tempname.width = player.width;
+                tempname.height = player.height;
+                tempname.enYPos = 0;
+                //the enemy spot will be determined when they are spawned, and so will they isAlive value
+                enemyArr[i] = tempname;
+                
+            }
+
             SetTargetFPS(60);
             //--------------------------------------------------------------------------------------
 
@@ -77,6 +93,7 @@ namespace Examples
                 if (frameCount == 10)
                 {
                     inputRelease = true;
+                    
                 }
                 if (inputRelease)
                 {
@@ -84,8 +101,29 @@ namespace Examples
                     inputRelease = false;
                     frameCount = 0;
                 }
+                spawnCounter++;
+                if (spawnCounter == 30)
+                {
+                    spawnLock = false;
+                }
+                if (!spawnLock)
+                {
+                    spawnCounter = 0;
+                }
                 player.TakeInput();
                 player.Move();
+                enemyArr[0].MoveEnemy(enemyArr);
+                for(int i = 0;i < enemyArr.Length;i++)
+                {
+                    if (enemyArr[i].isAlive == false && !spawnLock)
+                    {
+                        int b = rand.Next(0, player.space.Length - 1);
+                        enemyArr[i].enemySpot = player.space[b];
+                        enemyArr[i].isAlive = true;
+                        spawnLock = true;
+                    }
+                }
+
                 //----------------------------------------------------------------------------------
 
                 // Draw
@@ -95,7 +133,7 @@ namespace Examples
                 ClearBackground(BLACK);
 
                 DrawText("Score Test", 300, 0, 15, MAROON);
-                for (int i = 0; i < player.space.Length; i++)
+                for (int i = 0; i < player.space.Length; i++) //Board setup
                 {
                     DrawLine(player.space[i],screenHeight, player.space[i], 0, DARKBLUE);
                     if(i == player.space.Length - 1)
@@ -103,8 +141,15 @@ namespace Examples
                         DrawLine(player.space[i]+(player.width), screenHeight, player.space[i]+(player.width), 0, DARKBLUE);
                     }
                 }
-                DrawRectangle(player.posX, player.posY, player.width, player.height, RED);
-                EndDrawing();
+                DrawRectangle(player.posX, player.posY, player.width, player.height, RED); //player
+                for (int i = 0; i < enemyArr.Length; i++) //enemies
+                {
+                    if (enemyArr[i].isAlive)
+                    {
+                        DrawRectangle(enemyArr[i].enemySpot, enemyArr[i].enYPos, enemyArr[i].width, enemyArr[i].height, ORANGE);
+                    }
+                }
+                    EndDrawing();
                 //----------------------------------------------------------------------------------
             }
 

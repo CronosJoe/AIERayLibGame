@@ -2,31 +2,56 @@
 using System.Numerics; 
 using System;
 using Raylib_cs;
+using static Raylib_cs.Color;
 namespace raygamecsharp
 {
     public class Player
     {
         public int score = 0;
         //TODO add a high score from a txt
-        public int speed = 10;
-        public int jumpHeight;
-        public bool touchingGround = true;
-        public bool jump = false;
+        public int posX = 0;
+        public int posY = 0;
+        public int width = 50;
+        public int height = 50;
+        public int[] space = new int[9];
+        public int spot = 2; //idea of this is if going left it will get get -1, and if going right it will get +1, then it can access an array that will store the different positions the player can be in
+        public int inputCount = 0;
 
-        public bool checkJump()
+
+        public void TakeInput()
         {
-            bool check = false;
-            //this will check if any of the three basic upward inputs are used
-            if (IsKeyDown(KeyboardKey.KEY_W) || IsKeyDown(KeyboardKey.KEY_UP) || IsKeyDown(KeyboardKey.KEY_SPACE))
+            if (IsKeyDown(KeyboardKey.KEY_A) || IsKeyDown(KeyboardKey.KEY_LEFT))
             {
-                check = true;
-                
+                if (inputCount == 0)
+                {
+                    inputCount++;
+                    spot--;
+                    if (spot < 0)
+                    {
+                        spot = 0;
+                    }
+                }
+
             }
-            return check;
+            if (IsKeyDown(KeyboardKey.KEY_D) || IsKeyDown(KeyboardKey.KEY_RIGHT))
+            {
+                if (inputCount == 0)
+                {
+                    spot++;
+                    inputCount++;
+                    if (spot >= space.Length)
+                    {
+                        spot = space.Length - 1;
+                    }
+                }
+            }
+
         }
-        public void Jump()
+        public void Move()
         {
-            //TODO inplement jumping, figure out how to go down without freezing the game
+            posX = space[spot];
         }
+        
+
     }
 }

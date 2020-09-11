@@ -43,8 +43,27 @@ namespace Examples
             InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 
 
-
+            bool inputRelease = false;
+            int frameCount = 0;
             Player player = new Player();
+            player.posX = (screenWidth / 2)-100;
+            player.posY = screenHeight - 50;
+            //So I want space[0] to be the player's starting x subtracted by 2 of the player's size(hardcoded at 50), but I hope to remove the hard code so time to make an equation
+            //TODO remove the hardcoded size
+            for (int i = 0; i<player.space.Length; i++)
+            {
+                //For the left side of the course, maybe I want to remove the hard coded 3 in case I have a difficulty increase to change amount of lanes?
+                if (i > ((player.space.Length-1)/2)) 
+                {
+                    player.space[i] = player.posX - (player.width*(((player.space.Length - 1) / 2) - (i+1)));
+                }
+                else //for the right side of the course
+                {
+                    player.space[i] = player.posX + (player.width * ((i+1)- ((player.space.Length - 1) / 2))); //first time i=3 it is simply the player's starting location which should be middle
+                }
+
+            }
+            
             SetTargetFPS(60);
             //--------------------------------------------------------------------------------------
 
@@ -54,22 +73,37 @@ namespace Examples
                 // Update
                 //----------------------------------------------------------------------------------
                 // TODO: Update your variables here
-                player.jump = player.checkJump();
-                if (player.jump)
+                frameCount++;
+                if (frameCount == 10)
                 {
-
+                    inputRelease = true;
                 }
-
+                if (inputRelease)
+                {
+                    player.inputCount = 0;
+                    inputRelease = false;
+                    frameCount = 0;
+                }
+                player.TakeInput();
+                player.Move();
                 //----------------------------------------------------------------------------------
 
                 // Draw
                 //----------------------------------------------------------------------------------
                 BeginDrawing();
 
-                ClearBackground(RAYWHITE);
+                ClearBackground(BLACK);
 
                 DrawText("Score Test", 300, 0, 15, MAROON);
-
+                for (int i = 0; i < player.space.Length; i++)
+                {
+                    DrawLine(player.space[i],screenHeight, player.space[i], 0, DARKBLUE);
+                    if(i == player.space.Length - 1)
+                    {
+                        DrawLine(player.space[i]+(player.width), screenHeight, player.space[i]+(player.width), 0, DARKBLUE);
+                    }
+                }
+                DrawRectangle(player.posX, player.posY, player.width, player.height, RED);
                 EndDrawing();
                 //----------------------------------------------------------------------------------
             }

@@ -147,6 +147,7 @@ namespace Examples
                     if (enemyArr[i].isAlive)
                     {
                         DrawRectangle(enemyArr[i].enemySpot, enemyArr[i].enYPos, enemyArr[i].width, enemyArr[i].height, ORANGE);
+                        DrawRectangleLines(enemyArr[i].enemySpot, enemyArr[i].enYPos, enemyArr[i].width, enemyArr[i].height, GREEN);
                     }
                 }
                     EndDrawing();

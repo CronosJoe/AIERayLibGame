@@ -16,6 +16,7 @@ namespace raygamecsharp
         public int[] space = new int[9];
         public int spot = 2; //idea of this is if going left it will get get -1, and if going right it will get +1, then it can access an array that will store the different positions the player can be in
         public int inputCount = 0;
+        public bool pew = false;
 
 
         public void TakeInput()
@@ -44,6 +45,18 @@ namespace raygamecsharp
                         spot = space.Length - 1;
                     }
                 }
+            }
+            if (IsKeyDown(KeyboardKey.KEY_SPACE))
+            {
+                
+                   if(inputCount == 0)
+                {
+                    Console.WriteLine("pew");
+                    pew = true;
+                    inputCount++;
+                }
+
+               
             }
 
         }

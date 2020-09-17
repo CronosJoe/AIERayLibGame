@@ -81,14 +81,21 @@ namespace Examples
                 
             }
             //projectile setup
-            Projectile[] bullets = new Projectile[player.space.Length];
+            Projectile[] bullets = new Projectile[(player.space.Length-1)/2];
             for(int i = 0; i<bullets.Length; i++)
             {
                 Projectile tempname = new Projectile();
                 tempname.name = "ID#: " + i;
                 tempname.width = player.width/2;
                 tempname.height = player.height/2;
-                //tempname.spot.X = 
+                tempname.spot.X = player.space[0]-(player.height*2);
+                tempname.spot.Y = (screenHeight / 2) + (i*player.height);
+                tempname.shotSpeed = screenHeight / 16;
+                tempname.xPos = (int)tempname.spot.X;
+                tempname.yPos = (int)tempname.spot.Y;
+                tempname.fired = false; /* this is to make sure my bullets start in their side position */
+                bullets[i] = tempname;
+               
             }
             SetTargetFPS(60);
             //--------------------------------------------------------------------------------------
@@ -108,6 +115,7 @@ namespace Examples
                 if (inputRelease)
                 {
                     player.inputCount = 0;
+                    player.pew = false;
                     inputRelease = false;
                     frameCount = 0;
                 }
@@ -121,6 +129,14 @@ namespace Examples
                     spawnCounter = 0;
                 }
                 player.TakeInput();
+                if (player.pew) // fires the bullet should only fire 1
+                {
+                    bullets[0].Fired(bullets, player);
+                    player.pew = false;
+                }
+                bullets[0].MoveBullet(bullets);//if the bullet has been fired this will move them up the stage till they leave bounds or collide
+                bullets[0].OutOfBounds(bullets); //checks if a bullet leaves area of play in which case it will reload
+                CollisionCheck(bullets,enemyArr);
                 player.Move();
                 enemyArr[0].MoveEnemy(enemyArr);
                 for(int i = 0;i < enemyArr.Length;i++)
@@ -151,8 +167,14 @@ namespace Examples
                         DrawLine(player.space[i]+(player.width), screenHeight, player.space[i]+(player.width), 0, DARKBLUE);
                     }
                 }
+                //drawing my forever changing ammo
+                for (int i = 0; i < bullets.Length; i++)
+                {
+                    bullets[i].DrawBullet(bullets[i]);
+                }
+                DrawText("Ammo", (int)bullets[0].spot.X, (int)bullets[0].spot.Y-50,15,MAROON);
                 DrawRectangle(player.posX, player.posY, player.width, player.height, RED); //player
-
+                
                 for (int i = 0; i < enemyArr.Length; i++) //enemies
                 {
                     if (enemyArr[i].isAlive)
@@ -162,6 +184,7 @@ namespace Examples
                         DrawRectangleLines(enemyArr[i].enemySpot, enemyArr[i].enYPos, enemyArr[i].width, enemyArr[i].height, GREEN);
                     }
                 }
+                
                     EndDrawing();
                 //----------------------------------------------------------------------------------
             }
@@ -172,6 +195,24 @@ namespace Examples
             //--------------------------------------------------------------------------------------
 
             return 0;
+        }//end of main
+
+        public static void CollisionCheck(Projectile[] bullets, BasicEnemy[] enArr)
+        {
+            for(int i=0; i < enArr.Length; i++)
+            {
+                for(int j = 0; j < bullets.Length; j++)
+                {
+                    if ((bullets[j].fired && enArr[i].isAlive) &&(bullets[j].xPos == enArr[i].enemySpot))
+                    {
+                        if (bullets[j].yPos <= enArr[i].enYPos + enArr[i].height)
+                        {
+                            bullets[j].ResetPos(bullets, j);
+                            enArr[i].Reset(enArr, i);
+                        }
+                    }
+                }
+            }
         }
     }
 }

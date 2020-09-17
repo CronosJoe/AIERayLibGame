@@ -28,6 +28,12 @@ namespace raygamecsharp
         public void DrawEnemy(BasicEnemy enemy)
         {
             DrawRectangle( enemy.enemySpot, enemy.enYPos, enemy.width,enemy.height,ORANGE);
+            
+        }
+        public void Reset(BasicEnemy[] enArr, int index)
+        {
+            enArr[index].enYPos = -100;
+            enArr[index].isAlive = false;
         }
 
     }

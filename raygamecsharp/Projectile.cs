@@ -20,9 +20,9 @@ namespace raygamecsharp
 
         public void Fired(Projectile[] bullets, Player player)
         {
-            for(int i = bullets.Length-1; i == 0; i--)
+            for(int i = 0; i <bullets.Length; i++)
             {
-                if (bullets[i].fired == false)
+                if (!bullets[i].fired)
                 {
                     bullets[i].fired = true;
                     bullets[i].xPos = player.posX;
@@ -32,6 +32,42 @@ namespace raygamecsharp
             }
         }
 
+        public void MoveBullet(Projectile[] bullets)
+        {
+            for (int i = 0; i < bullets.Length; i++)
+            {
+                if (bullets[i].fired)
+                {
+                    bullets[i].yPos -= bullets[i].shotSpeed;
+                }
+            }
+        }
+
+        public void DrawBullet(Projectile bullet)
+        {
+            DrawRectangle(bullet.xPos,bullet.yPos,bullet.width,bullet.height, SKYBLUE);
+            DrawRectangleLines(bullet.xPos, bullet.yPos, bullet.width, bullet.height, GREEN);
+        }
+        public void OutOfBounds(Projectile[] bullets)
+        {
+            for (int i = 0; i < bullets.Length; i++)
+            {
+                if (bullets[i].yPos <= 0)
+                {
+                    bullets[i].fired = false;
+                    bullets[i].yPos = (int)bullets[i].spot.Y;
+                    bullets[i].xPos = (int)bullets[i].spot.X;
+                    
+                }
+
+            }
+        }
+        public void ResetPos(Projectile[] proArr, int index)
+        {
+            proArr[index].xPos = (int)proArr[index].spot.X;
+            proArr[index].yPos = (int)proArr[index].spot.Y;
+            proArr[index].fired = false;
+        }
 
        
     }

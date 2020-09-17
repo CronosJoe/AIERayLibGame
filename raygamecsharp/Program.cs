@@ -55,7 +55,7 @@ namespace Examples
             //TODO remove the hardcoded size
             for (int i = 0; i<player.space.Length; i++)
             {
-                //For the left side of the course, maybe I want to remove the hard coded 3 in case I have a difficulty increase to change amount of lanes?
+                //For the left side of the course
                 if (i > ((player.space.Length-1)/2)) 
                 {
                     player.space[i] = player.posX - (player.width*(((player.space.Length - 1) / 2) - (i+1)));
@@ -66,6 +66,7 @@ namespace Examples
                 }
 
             }
+            //enemy setup
             BasicEnemy[] enemyArr = new BasicEnemy[player.space.Length];
             for (int i = 0; i<enemyArr.Length; i++)
             {
@@ -79,7 +80,16 @@ namespace Examples
                 enemyArr[i] = tempname;
                 
             }
-
+            //projectile setup
+            Projectile[] bullets = new Projectile[player.space.Length];
+            for(int i = 0; i<bullets.Length; i++)
+            {
+                Projectile tempname = new Projectile();
+                tempname.name = "ID#: " + i;
+                tempname.width = player.width/2;
+                tempname.height = player.height/2;
+                //tempname.spot.X = 
+            }
             SetTargetFPS(60);
             //--------------------------------------------------------------------------------------
 
@@ -142,11 +152,13 @@ namespace Examples
                     }
                 }
                 DrawRectangle(player.posX, player.posY, player.width, player.height, RED); //player
+
                 for (int i = 0; i < enemyArr.Length; i++) //enemies
                 {
                     if (enemyArr[i].isAlive)
                     {
-                        DrawRectangle(enemyArr[i].enemySpot, enemyArr[i].enYPos, enemyArr[i].width, enemyArr[i].height, ORANGE);
+                        
+                        enemyArr[i].DrawEnemy(enemyArr[i]);
                         DrawRectangleLines(enemyArr[i].enemySpot, enemyArr[i].enYPos, enemyArr[i].width, enemyArr[i].height, GREEN);
                     }
                 }

@@ -33,6 +33,7 @@ namespace Examples
 {
     public class core_basic_window
     {
+       
         public static int Main()
         {
             // Initialization
@@ -48,11 +49,12 @@ namespace Examples
             bool spawnLock = false;
             int frameCount = 0;
             int highScore = 0;
+            
             Player player = new Player();
             Random rand = new Random();
             player.posX = (screenWidth / 2)-100;
             player.posY = screenHeight - 50;
-            player.score = 0;
+            player.currentScore = 0;
             //So I want space[0] to be the player's starting x subtracted by 2 of the player's size(hardcoded at 50), but I hope to remove the hard code so time to make an equation
             
             for (int i = 0; i<player.space.Length; i++)
@@ -105,91 +107,105 @@ namespace Examples
             // Main game loop
             while (!WindowShouldClose())    // Detect window close button or ESC key
             {
-                // Update
-                //----------------------------------------------------------------------------------
-                // TODO: Update your variables here
-                frameCount++;
-                if (frameCount == 10)
-                {
-                    inputRelease = true;
-                    
-                }
-                if (inputRelease)
-                {
-                    player.inputCount = 0;
-                    player.pew = false;
-                    inputRelease = false;
-                    frameCount = 0;
-                }
-                spawnCounter++;
-                if (spawnCounter == 30)
-                {
-                    spawnLock = false;
-                }
-                if (!spawnLock)
-                {
-                    spawnCounter = 0;
-                }
-                player.TakeInput();
-                if (player.pew) // fires the bullet should only fire 1
-                {
-                    bullets[0].Fired(bullets, player);
-                    player.pew = false;
-                }
-                bullets[0].MoveBullet(bullets);//if the bullet has been fired this will move them up the stage till they leave bounds or collide
-                bullets[0].OutOfBounds(bullets); //checks if a bullet leaves area of play in which case it will reload
-                CollisionCheck(bullets,enemyArr, player);
-                player.Move();
-                enemyArr[0].MoveEnemy(enemyArr);
-                for(int i = 0;i < enemyArr.Length;i++)
-                {
-                    if (enemyArr[i].isAlive == false && !spawnLock)
-                    {
-                        int b = rand.Next(0, player.space.Length - 1);
-                        enemyArr[i].enemySpot = player.space[b];
-                        enemyArr[i].isAlive = true;
-                        spawnLock = true;
-                    }
-                }
-
-                //----------------------------------------------------------------------------------
-
-                // Draw
-                //----------------------------------------------------------------------------------
+                Console.WriteLine($"New iteration game state is {player.state}");
                 BeginDrawing();
-
                 ClearBackground(BLACK);
+                switch (player.state) {
+                    case State.Game:
 
-                DrawText($"Score: {player.currentScore}", 300, 0, 15, MAROON);
-                for (int i = 0; i < player.space.Length; i++) //Board setup
-                {
-                    DrawLine(player.space[i],screenHeight, player.space[i], 0, DARKBLUE);
-                    if(i == player.space.Length - 1)
-                    {
-                        DrawLine(player.space[i]+(player.width), screenHeight, player.space[i]+(player.width), 0, DARKBLUE);
-                    }
-                }
-                //drawing my forever changing ammo
-                for (int i = 0; i < bullets.Length; i++)
-                {
-                    bullets[i].DrawBullet(bullets[i]);
-                }
-                DrawText("Ammo", (int)bullets[0].spot.X, (int)bullets[0].spot.Y-50,15,MAROON);
-                DrawRectangle(player.posX, player.posY, player.width, player.height, RED); //player
-                
-                for (int i = 0; i < enemyArr.Length; i++) //enemies
-                {
-                    if (enemyArr[i].isAlive)
-                    {
+                        // Update
+                        //----------------------------------------------------------------------------------
+                        #region timer
+                        frameCount++;
+                            if (frameCount == 10)
+                            {
+                                inputRelease = true;
+
+                            }
+                            if (inputRelease)
+                            {
+                                player.inputCount = 0;
+                                player.pew = false;
+                                inputRelease = false;
+                                frameCount = 0;
+                            }
+                            spawnCounter++;
+                            if (spawnCounter == 30)
+                            {
+                                spawnLock = false;
+                            }
+                            if (!spawnLock)
+                            {
+                                spawnCounter = 0;
+                            }
+                        #endregion
+                        player.TakeInput();
+                            if (player.pew) // fires the bullet should only fire 1
+                            {
+                                bullets[0].Fired(bullets, player);
+                                player.pew = false;
+                            }
+                            bullets[0].MoveBullet(bullets);//if the bullet has been fired this will move them up the stage till they leave bounds or collide
+                            bullets[0].OutOfBounds(bullets); //checks if a bullet leaves area of play in which case it will reload
+                            CollisionCheck(bullets, enemyArr, player);
+                            player.Move();
+                            enemyArr[0].MoveEnemy(enemyArr);
+                       
+                            enemyArr[0].LossCheck(player, enemyArr); //this should switch the state to State.End if the enemy reaches player pos
+                            for (int i = 0; i < enemyArr.Length; i++)
+                            {
+                                if (enemyArr[i].isAlive == false && !spawnLock)
+                                {
+                                    int b = rand.Next(0, player.space.Length - 1);
+                                    enemyArr[i].enemySpot = player.space[b];
+                                    enemyArr[i].isAlive = true;
+                                    spawnLock = true;
+                                }
+                            }
                         
-                        enemyArr[i].DrawEnemy(enemyArr[i]);
-                        DrawRectangleLines(enemyArr[i].enemySpot, enemyArr[i].enYPos, enemyArr[i].width, enemyArr[i].height, GREEN);
-                    }
-                }
+                            //----------------------------------------------------------------------------------
+
+                            // where I want to put all my drawings for case 1
+                            //----------------------------------------------------------------------------------
+                           
+                            DrawText($"Score: {player.currentScore}", 300, 0, 15, MAROON);
+                            player.DrawStage(player); //board setup
+                            //drawing my forever changing ammo
+                            for (int i = 0; i < bullets.Length; i++)
+                            {
+                                bullets[i].DrawBullet(bullets[i]);
+                            }
+                            DrawText("Ammo", (int)bullets[0].spot.X, (int)bullets[0].spot.Y - 50, 15, MAROON);
+                            DrawRectangle(player.posX, player.posY, player.width, player.height, RED); //player
+
+                            for (int i = 0; i < enemyArr.Length; i++) //enemies
+                            {
+                                if (enemyArr[i].isAlive)
+                                {
+
+                                    enemyArr[i].DrawEnemy(enemyArr[i]);
+                                    DrawRectangleLines(enemyArr[i].enemySpot, enemyArr[i].enYPos, enemyArr[i].width, enemyArr[i].height, GREEN);
+                                }
+                            }
+                        break;
+                    case State.End:
+                        if (player.currentScore > highScore)
+                        {
+                            highScore = player.currentScore;
+                            //Will add the save to file here once I get this case to work
+                        }
+                        DrawText($"Game Over, Your score was {player.currentScore}", screenWidth/8, screenHeight/2, 25, MAROON); 
+                        break;
                 
-                    EndDrawing();
+                       
+                }
+                EndDrawing();
+
+
+
+
                 //----------------------------------------------------------------------------------
-            }
+            } //end of main game loop
 
             // De-Initialization
             //--------------------------------------------------------------------------------------

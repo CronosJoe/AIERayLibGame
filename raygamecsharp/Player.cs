@@ -5,10 +5,15 @@ using Raylib_cs;
 using static Raylib_cs.Color;
 namespace raygamecsharp
 {
+    enum State
+    {
+        Game,
+        End
+    }
     public class Player
     {
-        public int score = 0;
-        //TODO add a high score from a txt
+        public Enum state = State.Game;
+      
         public int posX = 0;
         public int posY = 0;
         public int width = 50;
@@ -18,15 +23,17 @@ namespace raygamecsharp
         public int inputCount = 0;
         public bool pew = false;
         public int currentScore = 0;
+       
 
         public void TakeInput()
         {
             if (IsKeyDown(KeyboardKey.KEY_A) || IsKeyDown(KeyboardKey.KEY_LEFT))
             {
+                //left movement!
                 if (inputCount == 0)
                 {
                     inputCount++;
-                    spot--;
+                    spot--; //using spots to find which lane the player will be in.
                     if (spot < 0)
                     {
                         spot = 0;
@@ -36,6 +43,7 @@ namespace raygamecsharp
             }
             if (IsKeyDown(KeyboardKey.KEY_D) || IsKeyDown(KeyboardKey.KEY_RIGHT))
             {
+                //right movement!
                 if (inputCount == 0)
                 {
                     spot++;
@@ -48,10 +56,9 @@ namespace raygamecsharp
             }
             if (IsKeyDown(KeyboardKey.KEY_SPACE))
             {
-                
+                //this is the shoot command
                    if(inputCount == 0)
                 {
-                    Console.WriteLine("pew");
                     pew = true;
                     inputCount++;
                 }
@@ -64,6 +71,18 @@ namespace raygamecsharp
         {
             posX = space[spot];
         }
+        public void DrawStage(Player player)
+        {
+            for (int i = 0; i < player.space.Length; i++) //Board setup, copy and pasted over from main to clean up main so it has player.space instead of just space
+            {
+                DrawLine(player.space[i], GetScreenHeight(), player.space[i], 0, DARKBLUE);
+                if (i == player.space.Length - 1)
+                {
+                    DrawLine(player.space[i] + (player.width), GetScreenHeight(), player.space[i] + (player.width), 0, DARKBLUE);
+                }
+            }
+        }
+        
         
 
     }

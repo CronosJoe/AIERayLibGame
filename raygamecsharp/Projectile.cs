@@ -14,13 +14,12 @@ namespace raygamecsharp
        public int width;
        public int height;
        public bool fired = false;
-       public string type;//might not use just setting up for the possibility
        public string name;
 
 
         public void Fired(Projectile[] bullets, Player player)
         {
-            for(int i = 0; i <bullets.Length; i++)
+            for(int i = 0; i <bullets.Length; i++) //check through each bullet until it finds one that hasn't been fired then fires it, with larger stages it would be more then 2 shots
             {
                 if (!bullets[i].fired)
                 {
@@ -34,7 +33,7 @@ namespace raygamecsharp
 
         public void MoveBullet(Projectile[] bullets)
         {
-            for (int i = 0; i < bullets.Length; i++)
+            for (int i = 0; i < bullets.Length; i++) //this is pretty easy moves the bullet up the stage if it has been fired
             {
                 if (bullets[i].fired)
                 {
@@ -43,7 +42,7 @@ namespace raygamecsharp
             }
         }
 
-        public void DrawBullet(Projectile bullet)
+        public void DrawBullet(Projectile bullet) //art stuffs
         {
             DrawRectangle(bullet.xPos,bullet.yPos,bullet.width,bullet.height, SKYBLUE);
             DrawRectangleLines(bullet.xPos, bullet.yPos, bullet.width, bullet.height, GREEN);

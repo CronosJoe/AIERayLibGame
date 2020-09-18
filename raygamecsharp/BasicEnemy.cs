@@ -35,6 +35,18 @@ namespace raygamecsharp
             enArr[index].enYPos = -100;
             enArr[index].isAlive = false;
         }
+        public void LossCheck(Player player, BasicEnemy[] enArr)
+        {
+            for (int i = 0; i < enArr.Length; i++)
+            {
+                if (enArr[i].enYPos >= player.posY)
+                {
+                    Console.WriteLine("State should change here");
+                    player.state = State.End;
+                }
+            }
+            
+        }
 
     }
 }

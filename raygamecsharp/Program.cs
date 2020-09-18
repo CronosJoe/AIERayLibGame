@@ -47,12 +47,14 @@ namespace Examples
             int spawnCounter = 0;
             bool spawnLock = false;
             int frameCount = 0;
+            int highScore = 0;
             Player player = new Player();
             Random rand = new Random();
             player.posX = (screenWidth / 2)-100;
             player.posY = screenHeight - 50;
+            player.score = 0;
             //So I want space[0] to be the player's starting x subtracted by 2 of the player's size(hardcoded at 50), but I hope to remove the hard code so time to make an equation
-            //TODO remove the hardcoded size
+            
             for (int i = 0; i<player.space.Length; i++)
             {
                 //For the left side of the course
@@ -81,7 +83,7 @@ namespace Examples
                 
             }
             //projectile setup
-            Projectile[] bullets = new Projectile[(player.space.Length-1)/2];
+            Projectile[] bullets = new Projectile[(player.space.Length-1)/4];
             for(int i = 0; i<bullets.Length; i++)
             {
                 Projectile tempname = new Projectile();
@@ -90,7 +92,7 @@ namespace Examples
                 tempname.height = player.height/2;
                 tempname.spot.X = player.space[0]-(player.height*2);
                 tempname.spot.Y = (screenHeight / 2) + (i*player.height);
-                tempname.shotSpeed = screenHeight / 16;
+                tempname.shotSpeed = screenHeight / 32;
                 tempname.xPos = (int)tempname.spot.X;
                 tempname.yPos = (int)tempname.spot.Y;
                 tempname.fired = false; /* this is to make sure my bullets start in their side position */
@@ -136,7 +138,7 @@ namespace Examples
                 }
                 bullets[0].MoveBullet(bullets);//if the bullet has been fired this will move them up the stage till they leave bounds or collide
                 bullets[0].OutOfBounds(bullets); //checks if a bullet leaves area of play in which case it will reload
-                CollisionCheck(bullets,enemyArr);
+                CollisionCheck(bullets,enemyArr, player);
                 player.Move();
                 enemyArr[0].MoveEnemy(enemyArr);
                 for(int i = 0;i < enemyArr.Length;i++)
@@ -158,7 +160,7 @@ namespace Examples
 
                 ClearBackground(BLACK);
 
-                DrawText("Score Test", 300, 0, 15, MAROON);
+                DrawText($"Score: {player.currentScore}", 300, 0, 15, MAROON);
                 for (int i = 0; i < player.space.Length; i++) //Board setup
                 {
                     DrawLine(player.space[i],screenHeight, player.space[i], 0, DARKBLUE);
@@ -197,7 +199,7 @@ namespace Examples
             return 0;
         }//end of main
 
-        public static void CollisionCheck(Projectile[] bullets, BasicEnemy[] enArr)
+        public static void CollisionCheck(Projectile[] bullets, BasicEnemy[] enArr, Player player)
         {
             for(int i=0; i < enArr.Length; i++)
             {
@@ -209,6 +211,7 @@ namespace Examples
                         {
                             bullets[j].ResetPos(bullets, j);
                             enArr[i].Reset(enArr, i);
+                            player.currentScore++;
                         }
                     }
                 }

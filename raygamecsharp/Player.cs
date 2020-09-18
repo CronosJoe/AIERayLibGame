@@ -17,7 +17,7 @@ namespace raygamecsharp
         public int spot = 2; //idea of this is if going left it will get get -1, and if going right it will get +1, then it can access an array that will store the different positions the player can be in
         public int inputCount = 0;
         public bool pew = false;
-
+        public int currentScore = 0;
 
         public void TakeInput()
         {

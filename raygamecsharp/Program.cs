@@ -27,6 +27,7 @@ using static Raylib_cs.Color;   // color (RAYWHITE, MAROON, etc.)
 using static Raylib_cs.Raymath; // mathematics utilities and operations (Vector2Add, etc.)
 using System.Numerics;          // mathematics types (Vector2, Vector3, etc.)
 using System;
+using System.IO;
 using raygamecsharp;
 
 namespace Examples
@@ -42,14 +43,32 @@ namespace Examples
             const int screenHeight = 450;
 
             InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+            #region loadHighScore
+            string path = @"HighScore.txt";
+            if (!File.Exists(path))
+            {
+                // Create a file to write to.
+                using (StreamWriter sw = File.CreateText(path))
+                {
+                    sw.WriteLine("Current HighScore: 0");
+                }
+            }
+            int highScore = 0;
+            string highScoreString;
+            //this will open the file and assign the high score to the string
+            using (StreamReader sr = File.OpenText(path))
+            {
+                
+                highScoreString = sr.ReadLine();
+                string[] score = highScoreString.Split(' ');
+                highScore = TextToInteger(score[2]);
+            }
+                #endregion
 
-
-            bool inputRelease = false;
+                bool inputRelease = false;
             int spawnCounter = 0;
             bool spawnLock = false;
             int frameCount = 0;
-            int highScore = 0;
-            
             Player player = new Player();
             Random rand = new Random();
             player.posX = (screenWidth / 2)-100;
@@ -107,7 +126,6 @@ namespace Examples
             // Main game loop
             while (!WindowShouldClose())    // Detect window close button or ESC key
             {
-                Console.WriteLine($"New iteration game state is {player.state}");
                 BeginDrawing();
                 ClearBackground(BLACK);
                 switch (player.state) {
@@ -168,8 +186,9 @@ namespace Examples
                             // where I want to put all my drawings for case 1
                             //----------------------------------------------------------------------------------
                            
-                            DrawText($"Score: {player.currentScore}", 300, 0, 15, MAROON);
-                            player.DrawStage(player); //board setup
+                            DrawText($"Score: {player.currentScore}", 300, 0, 20, MAROON);
+                            DrawText(highScoreString, 400, 0, 20, MAROON);
+                        player.DrawStage(player); //board setup
                             //drawing my forever changing ammo
                             for (int i = 0; i < bullets.Length; i++)
                             {
@@ -192,9 +211,15 @@ namespace Examples
                         if (player.currentScore > highScore)
                         {
                             highScore = player.currentScore;
-                            //Will add the save to file here once I get this case to work
+                            highScoreString = $"Current HighScore: {highScore}";
+                            //Should overwrite the current text file?
+                            using (StreamWriter sw = File.CreateText(path))
+                            {
+                                sw.WriteLine(highScoreString);
+                            }
                         }
-                        DrawText($"Game Over, Your score was {player.currentScore}", screenWidth/8, screenHeight/2, 25, MAROON); 
+                        DrawText($"Game Over, Your score was {player.currentScore}", screenWidth/8, screenHeight/2, 25, MAROON);
+                        DrawText(highScoreString, screenWidth/8, screenHeight/2+100, 25, MAROON);
                         break;
                 
                        

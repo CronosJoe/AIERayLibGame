@@ -52,7 +52,7 @@ namespace raygamecsharp
             for (int i = 0; i < bullets.Length; i++)
             {
                 if (bullets[i].yPos <= 0)
-                {
+                { //this will reload the bullet once it has gone above the stage
                     bullets[i].fired = false;
                     bullets[i].yPos = (int)bullets[i].spot.Y;
                     bullets[i].xPos = (int)bullets[i].spot.X;
@@ -62,7 +62,7 @@ namespace raygamecsharp
             }
         }
         public void ResetPos(Projectile[] proArr, int index)
-        {
+        { //this will reload the bullet once it has collided with an enemy
             proArr[index].xPos = (int)proArr[index].spot.X;
             proArr[index].yPos = (int)proArr[index].spot.Y;
             proArr[index].fired = false;

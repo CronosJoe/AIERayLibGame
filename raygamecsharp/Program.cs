@@ -94,11 +94,7 @@ namespace Examples
             for (int i = 0; i<enemyArr.Length; i++)
             {
                
-                BasicEnemy tempname = new BasicEnemy();
-                tempname.ID = "ID#: " + i;
-                tempname.width = player.width;
-                tempname.height = player.height;
-                tempname.enYPos = 0;
+                BasicEnemy tempname = new BasicEnemy("ID#: " + i, player.width, player.height, 0);
                 //the enemy spot will be determined when they are spawned, and so will they isAlive value
                 enemyArr[i] = tempname;
                 

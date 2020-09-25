@@ -51,7 +51,6 @@ namespace raygamecsharp
             {
                 if (enArr[i].enYPos >= player.posY)
                 {
-                    Console.WriteLine("State should change here");
                     player.state = State.End;
                 }
             }

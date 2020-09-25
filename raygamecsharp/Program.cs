@@ -99,6 +99,32 @@ namespace Examples
                 enemyArr[i] = tempname;
                 
             }
+            //special enemy setup
+            SpecialEnemy[] specEnArr = new SpecialEnemy[5];
+            for(int i =0; i<specEnArr.Length; i++)
+            {
+                int randINT = rand.Next(1, 3);
+                if (randINT == 1)
+                {
+                    SpecialEnemy tempname = new SpecialEnemy("ID " + i, player.width,player.height,0,rand.Next(1,3)); //first constructor hidden enemy
+                    specEnArr[i] = tempname;
+                }
+                else
+                {
+                    int boolDet = rand.Next(1, 3);
+                    bool tempBool;
+                    if(boolDet == 1)
+                    {
+                        tempBool = true;
+                    }
+                    else
+                    {
+                        tempBool = false;
+                    }
+                    SpecialEnemy tempname = new SpecialEnemy("ID " + i, player.width,player.height,0,tempBool); //creates a shown typed enemy through second constructor
+                    specEnArr[i] = tempname;
+                }
+            }
             //projectile setup
             Projectile[] bullets = new Projectile[(player.space.Length-1)/4];
             for(int i = 0; i<bullets.Length; i++)
@@ -162,17 +188,34 @@ namespace Examples
                             bullets[0].MoveBullet(bullets);//if the bullet has been fired this will move them up the stage till they leave bounds or collide
                             bullets[0].OutOfBounds(bullets); //checks if a bullet leaves area of play in which case it will reload
                             CollisionCheck(bullets, enemyArr, player);
+                            SpecCollisionCheck(bullets, specEnArr, player);
                             player.Move();
-                            enemyArr[0].MoveEnemy(enemyArr);
+                            enemyArr[0].MoveEnemy(enemyArr); //moves the basic enemies
+                            specEnArr[0].MoveEnemy(specEnArr); //moves the traited enemies
                        
                             enemyArr[0].LossCheck(player, enemyArr); //this should switch the state to State.End if the enemy reaches player pos
+                            specEnArr[0].LossCheck(player, specEnArr); //if the traited enemy passes the player this will also switch to State.End
                             for (int i = 0; i < enemyArr.Length; i++)
                             {
-                                if (enemyArr[i].isAlive == false && !spawnLock)
+                                if (!enemyArr[i].isAlive && !spawnLock)
                                 {
-                                    int b = rand.Next(0, player.space.Length - 1);
+                                //basic enemy part
+                                    int b = rand.Next(player.space.Length - 1);
                                     enemyArr[i].enemySpot = player.space[b];
                                     enemyArr[i].isAlive = true;
+
+                                //special enemy part
+                                int c = rand.Next(player.space.Length - 1);
+                                bool tempBoolLock = true;
+                                for(int j = 0; j<specEnArr.Length; j++)
+                                {
+                                    if(!specEnArr[j].isAlive && tempBoolLock)
+                                    {
+                                        specEnArr[j].enemySpot = player.space[c];
+                                        specEnArr[j].isAlive = true;
+                                        tempBoolLock = false;
+                                    }
+                                }
                                     spawnLock = true;
                                 }
                             }
@@ -200,6 +243,14 @@ namespace Examples
 
                                     enemyArr[i].DrawEnemy(enemyArr[i]);
                                     DrawRectangleLines(enemyArr[i].enemySpot, enemyArr[i].enYPos, enemyArr[i].width, enemyArr[i].height, GREEN);
+                                }
+                            }
+                            for(int i = 0; i < specEnArr.Length; i++)
+                            {
+                                if (specEnArr[i].isAlive)
+                                {
+                                specEnArr[i].DrawEnemy(specEnArr[i]);
+                                DrawRectangleLines(specEnArr[i].enemySpot, specEnArr[i].enYPos, specEnArr[i].width, specEnArr[i].height, GOLD);
                                 }
                             }
                         break;
@@ -243,6 +294,24 @@ namespace Examples
                 for(int j = 0; j < bullets.Length; j++)
                 {
                     if ((bullets[j].fired && enArr[i].isAlive) &&(bullets[j].xPos == enArr[i].enemySpot))
+                    {
+                        if (bullets[j].yPos <= enArr[i].enYPos + enArr[i].height)
+                        {
+                            bullets[j].ResetPos(bullets, j);
+                            enArr[i].Reset(enArr, i);
+                            player.currentScore++;
+                        }
+                    }
+                }
+            }
+        }// end of the basic enemy porjectile collision
+        public static void SpecCollisionCheck(Projectile[] bullets, SpecialEnemy[] enArr, Player player) //the check and parameters are almost the same minus the enemy type
+        {
+            for (int i = 0; i < enArr.Length; i++)
+            {
+                for (int j = 0; j < bullets.Length; j++)
+                {
+                    if ((bullets[j].fired && enArr[i].isAlive) && (bullets[j].xPos == enArr[i].enemySpot))
                     {
                         if (bullets[j].yPos <= enArr[i].enYPos + enArr[i].height)
                         {

@@ -21,7 +21,8 @@ namespace raygamecsharp
         public int width = 50;
         public int height = 50;
         public int[] space = new int[9];
-        public int spot = 2; //idea of this is if going left it will get get -1, and if going right it will get +1, then it can access an array that will store the different positions the player can be in
+        //idea of this is if going left it will get get -1, and if going right it will get +1, then it can access an array that will store the different positions the player can be in
+        public int spot = 2; 
         public int inputCount = 0;
         public bool pew = false;
         public int currentScore = 0;
@@ -35,7 +36,8 @@ namespace raygamecsharp
                 if (inputCount == 0)
                 {
                     inputCount++;
-                    spot--; //using spots to find which lane the player will be in.
+                    //using spots to find which lane the player will be in.
+                    spot--; 
                     if (spot < 0)
                     {
                         spot = 0;
@@ -77,7 +79,8 @@ namespace raygamecsharp
         }
         public void DrawStage(Player player)
         {
-            for (int i = 0; i < player.space.Length; i++) //Board setup, copy and pasted over from main to clean up main so it has player.space instead of just space
+            //Board setup, copy and pasted over from main to clean up main so it has player.space instead of just space
+            for (int i = 0; i < player.space.Length; i++)
             {
                 DrawLine(player.space[i], GetScreenHeight(), player.space[i], 0, DARKBLUE);
                 if (i == player.space.Length - 1)

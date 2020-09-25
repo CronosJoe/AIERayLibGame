@@ -66,7 +66,7 @@ namespace raygamecsharp
                 }
             }
         }
-        public void LossCheck(Player player, SpecialEnemy[] enArr)
+        public void LossCheck(Player player, SpecialEnemy[] enArr) 
         {
             for (int i = 0; i < enArr.Length; i++)
             {
@@ -77,7 +77,7 @@ namespace raygamecsharp
             }
 
         }
-        public void Reset(SpecialEnemy[] enArr, int index)
+        public void Reset(SpecialEnemy[] enArr, int index) //this will reset the enemy object above the stage view so that once they are set to alive again they are ready to move down.
         {
             enArr[index].enYPos = -100;
             enArr[index].isAlive = false;

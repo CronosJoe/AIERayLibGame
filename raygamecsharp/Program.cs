@@ -124,7 +124,8 @@ namespace Examples
                     {
                         tempBool = false;
                     }
-                    SpecialEnemy tempname = new SpecialEnemy("ID " + i, player.width,player.height,0,tempBool); //creates a shown typed enemy through second constructor
+                    //creates a shown typed enemy through second constructor
+                    SpecialEnemy tempname = new SpecialEnemy("ID " + i, player.width,player.height,0,tempBool); 
                     specEnArr[i] = tempname;
                 }
             }
@@ -184,18 +185,22 @@ namespace Examples
                             }
                         #endregion
                         player.TakeInput();
-                            if (player.pew) // fires the bullet should only fire 1
+                            if (player.pew) // fires the bullet should only fire 1, works
                             {
                                 bullets[0].Fired(bullets, player);
                                 player.pew = false;
                             }
-                            bullets[0].MoveBullet(bullets);//if the bullet has been fired this will move them up the stage till they leave bounds or collide
-                            bullets[0].OutOfBounds(bullets); //checks if a bullet leaves area of play in which case it will reload
+                        //if the bullet has been fired this will move them up the stage till they leave bounds or collide
+                        bullets[0].MoveBullet(bullets);
+                        //checks if a bullet leaves area of play in which case it will reload
+                        bullets[0].OutOfBounds(bullets); 
                             CollisionCheck(bullets, enemyArr, player);
                             SpecCollisionCheck(bullets, specEnArr, player);
                             player.Move();
-                            enemyArr[0].MoveEnemy(enemyArr); //moves the basic enemies
-                            specEnArr[0].MoveEnemy(specEnArr); //moves the traited enemies
+                        //moves the basic enemies
+                        enemyArr[0].MoveEnemy(enemyArr);
+                        //moves the traited enemies
+                        specEnArr[0].MoveEnemy(specEnArr); 
                        
                             enemyArr[0].LossCheck(player, enemyArr); //this should switch the state to State.End if the enemy reaches player pos
                             specEnArr[0].LossCheck(player, specEnArr); //if the traited enemy passes the player this will also switch to State.End

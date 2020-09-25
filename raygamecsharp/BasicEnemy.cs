@@ -42,14 +42,14 @@ namespace raygamecsharp
         }
         public void Reset(BasicEnemy[] enArr, int index)
         {
-            enArr[index].enYPos = -100;
-            enArr[index].isAlive = false;
+            enArr[index].enYPos = -100; //this sets them above the screen for while they are dead so that when they respawn they can simply begin moving down again
+            enArr[index].isAlive = false; //sets the enemies condition to dead
         }
         public void LossCheck(Player player, BasicEnemy[] enArr)
         {
             for (int i = 0; i < enArr.Length; i++)
             {
-                if (enArr[i].enYPos >= player.posY)
+                if (enArr[i].enYPos >= player.posY) //this checks if the enemy is officially at the same height as the player(meaning they are lined up) at this point the player removing the enemy is impossible so game ends
                 {
                     player.state = State.End;
                 }

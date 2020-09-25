@@ -5,14 +5,16 @@ using Raylib_cs;
 using static Raylib_cs.Color;
 namespace raygamecsharp
 {
+    //game state set up
     enum State
     {
         Game,
-        End
+        End,
+        Start
     }
     public class Player
     {
-        public Enum state = State.Game;
+        public Enum state = State.Start;
       
         public int posX = 0;
         public int posY = 0;
@@ -57,6 +59,7 @@ namespace raygamecsharp
             if (IsKeyDown(KeyboardKey.KEY_SPACE))
             {
                 //this is the shoot command
+                //this can only activate if the player isn't moving
                    if(inputCount == 0)
                 {
                     pew = true;
@@ -69,6 +72,7 @@ namespace raygamecsharp
         }
         public void Move()
         {
+            //simply sets the player's position to their x spot so that they are always in a lane
             posX = space[spot];
         }
         public void DrawStage(Player player)

@@ -4,7 +4,7 @@ using static Raylib_cs.Color;
 using static Raylib_cs.Raylib;
 namespace raygamecsharp
 {
-    public class SpecialEnemy : BasicEnemy, ISpecialEnemy
+    public class SpecialEnemy : BasicEnemy
     {
         public Color col;
         public int type;
@@ -20,11 +20,11 @@ namespace raygamecsharp
             switch (type)
             {
                 case 1:
-                    speed *= 2;
+                    speed *= 3;
                     break;
 
                 case 2:
-                    speed /= 2;
+                    speed *= 2;
                     break;
 
             }
@@ -41,16 +41,17 @@ namespace raygamecsharp
             if (slowFast)
             {
                 col = RED;
-                speed *= 2;
+                speed *= 3;
             }
             else
             {
                 col = BLUE;
-                speed *= 1/2;
+                speed *=2;
             }
             
         }
-
+        #region methods
+        //these methods are all simply overloads of the methods in Basic enemy they do about the same thing just with different arguments from the SpecialEnemy class
         public void DrawEnemy(SpecialEnemy specEn)
         {
             DrawRectangle(specEn.enemySpot, specEn.enYPos, specEn.width, specEn.height, specEn.col);
@@ -81,5 +82,6 @@ namespace raygamecsharp
             enArr[index].enYPos = -100;
             enArr[index].isAlive = false;
         }
+        #endregion
     }
 }

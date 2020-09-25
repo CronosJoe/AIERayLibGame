@@ -26,6 +26,7 @@ using static Raylib_cs.Raylib;  // core methods (InitWindow, BeginDrawing())
 using static Raylib_cs.Color;   // color (RAYWHITE, MAROON, etc.)
 using static Raylib_cs.Raymath; // mathematics utilities and operations (Vector2Add, etc.)
 using System.Numerics;          // mathematics types (Vector2, Vector3, etc.)
+using Raylib_cs;
 using System;
 using System.IO;
 using raygamecsharp;
@@ -74,8 +75,9 @@ namespace Examples
             player.posX = (screenWidth / 2)-100;
             player.posY = screenHeight - 50;
             player.currentScore = 0;
+            #region setUp
             //So I want space[0] to be the player's starting x subtracted by 2 of the player's size(hardcoded at 50), but I hope to remove the hard code so time to make an equation
-            
+
             for (int i = 0; i<player.space.Length; i++)
             {
                 //For the left side of the course
@@ -100,7 +102,7 @@ namespace Examples
                 
             }
             //special enemy setup
-            SpecialEnemy[] specEnArr = new SpecialEnemy[5];
+            SpecialEnemy[] specEnArr = new SpecialEnemy[3];
             for(int i =0; i<specEnArr.Length; i++)
             {
                 int randINT = rand.Next(1, 3);
@@ -111,6 +113,7 @@ namespace Examples
                 }
                 else
                 {
+                    //some local variables for this constructor to determine enemy type
                     int boolDet = rand.Next(1, 3);
                     bool tempBool;
                     if(boolDet == 1)
@@ -142,6 +145,7 @@ namespace Examples
                 bullets[i] = tempname;
                
             }
+            #endregion
             SetTargetFPS(60);
             //--------------------------------------------------------------------------------------
 
@@ -238,6 +242,7 @@ namespace Examples
 
                             for (int i = 0; i < enemyArr.Length; i++) //enemies
                             {
+                            //this will check if the enemy is alive and moving, if they are it will draw the enemy, if they are not alive the enemy won't be drawn
                                 if (enemyArr[i].isAlive)
                                 {
 
@@ -247,6 +252,7 @@ namespace Examples
                             }
                             for(int i = 0; i < specEnArr.Length; i++)
                             {
+                            //same as basic enemy here of ememy is dead they won't be drawn.
                                 if (specEnArr[i].isAlive)
                                 {
                                 specEnArr[i].DrawEnemy(specEnArr[i]);
@@ -265,8 +271,31 @@ namespace Examples
                                 sw.WriteLine(highScoreString);
                             }
                         }
+                        if (IsKeyDown(KeyboardKey.KEY_R))
+                        {
+                            for (int i = 0; i < specEnArr.Length; i++) //reseting the special enemies
+                            {
+                                specEnArr[i].Reset(specEnArr, i);
+                            }
+                            for (int i = 0; i < enemyArr.Length; i++) //enemies
+                            {
+                                enemyArr[i].Reset(enemyArr, i);
+                            }
+                            player.currentScore = 0;
+                            player.state = State.Start;
+                        }
                         DrawText($"Game Over, Your score was {player.currentScore}", screenWidth/8, screenHeight/2, 25, MAROON);
                         DrawText(highScoreString, screenWidth/8, screenHeight/2+100, 25, MAROON);
+                        DrawText("Press R to play again, or Esc to quit the game.", screenWidth / 8, screenHeight / 2 + 200, 20, MAROON);
+                        break;
+                    case State.Start:
+                        if (IsKeyDown(KeyboardKey.KEY_SPACE) || IsKeyDown(KeyboardKey.KEY_ENTER))
+                        {
+                            player.state = State.Game;
+                        }
+                        DrawText("Block Blocker!", screenWidth/4, screenHeight/2, 40, MAROON);
+                        DrawText("To start, hit the enter or space key. ", 0, screenHeight / 2 + 100, 20, MAROON);
+                        DrawText("The controls are arrow keys/ad for movement and space bar to shoot.", 0, screenHeight / 2 + 200, 20, MAROON);
                         break;
                 
                        
